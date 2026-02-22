@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Content Machine — Your Newsletter, On Autopilot</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --cream: #ede7d6;
+    --accent: #c8401a;
+    --accent-light: #e8501f;
+    --gold: #b8960c;
+    --muted: #6b6456;
+    --border: #d4cabb;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 16px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .masthead-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .masthead-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .masthead-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 64px 48px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 8vw, 110px);
+    line-height: 0.92;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.2s;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 64px;
+    margin-top: 48px;
+    align-items: end;
+    padding-bottom: 64px;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 520px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.35s;
+  }
+
+  .hero-sub strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* WAITLIST FORM */
+  .waitlist-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.45s;
+  }
+
+  .waitlist-card::before {
+    content: '★ EARLY ACCESS';
+    position: absolute;
+    top: -12px;
+    left: 24px;
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding: 4px 12px;
+  }
+
+  .waitlist-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .waitlist-sub {
+    font-size: 12px;
+    color: #9a9080;
+    margin-bottom: 24px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-input {
+    background: transparent;
+    border: 1px solid #3a3530;
+    color: var(--paper);
+    padding: 13px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input::placeholder { color: #5a5040; }
+  .form-input:focus { border-color: var(--accent); }
+
+  .form-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .form-btn:hover { background: var(--accent-light); }
+  .form-btn:active { transform: scale(0.98); }
+
+  .form-disclaimer {
+    font-size: 10px;
+    color: #5a5040;
+    font-family: 'DM Mono', monospace;
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-msg .checkmark {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .success-msg p {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-style: italic;
+  }
+ .success-msg small {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #9a9080;
+    display: block;
+    margin-top: 6px;
+  }
+
+  /* DIVIDER */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 48px;
+    margin: 0;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  .divider-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* PAIN SECTION */
+  .pain {
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .pain-left {}
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .pain-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    font-weight: 900;
+    margin-bottom: 24px;
+  }
+
+  .pain-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .time-breakdown {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .time-breakdown h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .time-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .time-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    width: 160px;
+    flex-shrink: 0;
+  }
+
+  .time-bar-wrap { flex: 1; height: 8px; background: var(--border); }
+
+  .time-bar {
+    height: 100%;
+    background: var(--accent);
+    transition: width 1.5s ease;
+  }
+
+  .time-bar.good { background: var(--gold); }
+
+  .time-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    width: 32px;
+    text-align: right;
+  }
+
+  .time-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+
+  /* HOW IT WORKS */
+  .how {
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .how-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 56px;
+  }
+
+  .how-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .how-headline em { font-style: italic; color: var(--accent); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .step {
+    background: var(--paper);
+    padding: 36px 28px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .step:hover { background: var(--cream); }
+
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .step-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+ .step-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 20px;
+  }
+
+  /* WHAT YOU GET */
+  .output {
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .output-header {
+    margin-bottom: 56px;
+  }
+
+  .output-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .output-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .output-headline em { font-style: italic; }
+
+  .deliverables {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #2a2520;
+  }
+
+  .deliverable {
+    background: #1a1512;
+    padding: 36px 28px;
+    border-top: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .deliverable:hover { border-top-color: var(--accent); }
+
+  .deliverable-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .deliverable-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .deliverable-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #9a9080;
+  }
+
+  .deliverable-detail {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  /* MORNING ROUTINE MOCKUP */
+  .morning {
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .morning-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 24px;
+  }
+
+  .morning-headline em { font-style: italic; color: var(--accent); }
+
+  .morning-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  /* WHATSAPP MOCKUP */
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  .phone {
+    width: 300px;
+    background: #0d1117;
+    border-radius: 36px;
+    padding: 16px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
+    position: relative;
+  }
+
+  .phone-screen {
+    background: #111b21;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 500px;
+  }
+
+  .phone-header {
+    background: #1f2c34;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .phone-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .phone-name {
+    color: #e9edef;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .phone-status {
+    color: #8696a0;
+    font-size: 11px;
+  }
+
+  .phone-body {
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .msg {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .msg-in {
+    background: #202c33;
+    color: #e9edef;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+  }
+
+  .msg-out {
+    background: #005c4b;
+    color: #e9edef;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+  }
+
+  .msg-time {
+    font-size: 9px;
+    color: #8696a0;
+    text-align: right;
+    margin-top: 3px;
+  }
+ .msg-in .msg-time { text-align: left; }
+
+  .msg strong { color: #25d366; }
+
+  /* PRICING */
+  .pricing {
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .pricing-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .pricing-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+
+  .pricing-sub {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 64px;
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .price-card {
+    max-width: 520px;
+    margin: 0 auto;
+    border: 2px solid var(--ink);
+    padding: 48px;
+    position: relative;
+  }
+
+  .price-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding: 5px 16px;
+    white-space: nowrap;
+  }
+
+  .price-original {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-bottom: 4px;
+  }
+
+  .price-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .price-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 36px;
+  }
+
+  .price-includes {
+    text-align: left;
+    margin-bottom: 36px;
+  }
+
+  .price-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .price-item:last-child { border-bottom: none; }
+
+  .price-check {
+    color: var(--accent);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .price-cta {
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 18px 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .price-cta:hover { background: var(--accent); }
+
+  .price-guarantee {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  /* SOCIAL POSTS */
+  .social-section {
+    padding: 80px 48px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+  }
+
+  .social-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .social-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 40px;
+  }
+  .tweets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .tweet {
+    background: white;
+    border: 1px solid #e1d8c8;
+    padding: 24px;
+    position: relative;
+  }
+
+  .tweet-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .tweet-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .tweet-name { font-weight: 500; font-size: 14px; }
+  .tweet-handle { font-size: 12px; color: var(--muted); }
+
+  .tweet-body {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .tweet-tag { color: #1da1f2; }
+
+  .tweet-footer {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .copy-btn {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 6px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .copy-btn:hover { background: var(--accent); }
+  .copy-btn.copied { background: var(--gold); }
+
+  /* FOOTER */
+  footer {
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 2px solid var(--ink);
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 900;
+    font-style: italic;
+  }
+
+  .footer-mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .masthead, .hero, .pain, .how, .output, .morning, .pricing, .social-section, footer {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .hero-layout, .pain, .morning { grid-template-columns: 1fr; gap: 40px; }
+    .steps, .deliverables, .tweets { grid-template-columns: 1fr; }
+    .how-header { flex-direction: column; gap: 16px; }
+    .masthead { flex-direction: column; gap: 8px; text-align: center; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .hero-headline { font-size: clamp(40px, 12vw, 72px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-date" id="today-date">Sunday, February 22, 2026</div>
+  <div class="masthead-title">The Content Machine</div>
+  <div class="masthead-tagline">Autonomous Newsletter Intelligence</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">⚡ Powered by OpenClaw AI Agent</div>
+  <h1 class="hero-headline">Your newsletter,<br><em>written while<br>you sleep.</em></h1>
+  <div class="hero-layout">
+    <div>
+      <p class="hero-sub">
+        A pre-configured AI agent that monitors your niche 24/7, drafts issues in <strong>your voice</strong>, and delivers a complete content calendar to your phone every Monday morning. No setup. No prompting. No staring at blank pages.
+      </p>
+    </div>
+    <div>
+      <div class="waitlist-card">
+        <div class="waitlist-label">Join the waitlist.<br>First 50 get 40% off.</div>
+        <div class="waitlist-sub">// 23 spots remaining</div>
+        <div class="form-group" id="form-wrap">
+          <input class="form-input" type="text" id="name-input" placeholder="Your first name" />
+          <input class="form-input" type="email" id="email-input" placeholder="Your email address" />
+          <input class="form-input" type="text" id="niche-input" placeholder="Your newsletter niche (e.g. B2B SaaS)" />
+          <button class="form-btn" onclick="handleSubmit()">CLAIM MY SPOT →</button>
+          <div class="form-disclaimer">// No spam. One email when we launch. Unsubscribe anytime.</div>
+        </div>
+        <div class="success-msg" id="success-msg">
+          <div class="checkmark">✓</div>
+          <p>You're on the list.</p>
+          <small>// We'll reach out before we launch — you're #<span id="spot-num">24</span></small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="pain-left reveal">
+    <div class="section-label">// The Problem</div>
+    <h2 class="pain-headline">You became a writer, not a production studio.</h2>
+    <p class="pain-body">
+      The average newsletter writer spends <strong>8–12 hours a week</strong> on production — researching, drafting, editing, formatting, scheduling. That's before a single word reaches your readers. The ideas are in your head. The bottleneck is everything else.
+    </p>
+  </div>
+  <div class="reveal">
+    <div class="time-breakdown">
+      <h3>Where your week actually goes</h3>
+      <div class="time-row">
+        <div class="time-label">Research & ideas</div>
+        <div class="time-bar-wrap"><div class="time-bar" data-width="75"></div></div>
+        <div class="time-pct">75%</div>
+      </div>
+      <div class="time-row">
+        <div class="time-label">Writing & drafting</div>
+        <div class="time-bar-wrap"><div class="time-bar" data-width="85"></div></div>
+        <div class="time-pct">85%</div>
+      </div>
+      <div class="time-row">
+        <div class="time-label">Editing & formatting</div>
+        <div class="time-bar-wrap"><div class="time-bar" data-width="60"></div></div>
+        <div class="time-pct">60%</div>
+      </div>
+      <div class="time-row">
+        <div class="time-label">Scheduling & ops</div>
+        <div class="time-bar-wrap"><div class="time-bar" data-width="40"></div></div>
+        <div class="time-pct">40%</div>
+      </div>
+      <div class="time-row">
+        <div class="time-label">Actual creative thinking</div>
+        <div class="time-bar-wrap"><div class="time-bar good" data-width="15"></div></div>
+        <div class="time-pct">15%</div>
+      </div>
+      <div class="time-note">↑ The Content Machine flips this ratio. You think. It produces.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="how-header reveal">
+    <h2 class="how-headline">How it <em>actually</em><br>works</h2>
+  </div>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Install your agent</div>
+      <div class="step-body">One-time setup. You install the pre-configured OpenClaw package on your machine. No coding. Follow the guide — it takes under an hour.</div>
+      <div class="step-time">// Once, ever</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <div class="step-title">Feed it your voice</div>
+      <div class="step-body">We walk you through building your brand voice profile: tone, vocabulary, structure preferences, the phrases you love and hate. The agent never forgets.</div>
+      <div class="step-time">// 30 minutes, once</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <div class="step-title">It runs on schedule</div>
+      <div class="step-body">Every week, your agent wakes up, scrapes your sources, identifies what's trending in your niche, and drafts a full issue in your voice. Automatically.</div>
+      <div class="step-time">// Every week, zero effort</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <div class="step-title">You review & publish</div>
+      <div class="step-body">Monday morning, your WhatsApp pings. Full draft ready. You read, tweak what you want, hit send. Your name on it. Your voice. 20 minutes max.</div>
+      <div class="step-time">// ~20 min/week, forever</div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERABLES -->
+<section class="output">
+  <div class="output-header reveal">
+    <div class="output-label">// What's included</div>
+    <h2 class="output-headline">Everything<br><em>in the box.</em></h2>
+  </div>
+  <div class="deliverables">
+    <div class="deliverable reveal">
+      <div class="deliverable-icon">🔍</div>
+      <div class="deliverable-title">Niche Intelligence Scanner</div>
+      <div class="deliverable-body">Pre-built scrapers that monitor X, Reddit, RSS feeds, and Substack in your specific niche. Finds what's worth writing about before your competitors do.</div>
+      <div class="deliverable-detail">// Runs 24/7 on your machine</div>
+    </div>
+    <div class="deliverable reveal">
+      <div class="deliverable-icon">🗣</div>
+      <div class="deliverable-title">Voice Profile System</div>
+      <div class="deliverable-body">A structured JSON context file that captures your writing style, vocabulary, structure preferences, and editorial opinion. Every draft sounds like you.</div>
+      <div class="deliverable-detail">// Your writing fingerprint, encoded</div>
+    </div>
+    <div class="deliverable reveal">
+      <div class="deliverable-icon">✍️</div>
+      <div class="deliverable-title">Full Draft Generator</div>
+      <div class="deliverable-body">Complete newsletter issues: hook, body, links, CTA. Formatted for Beehiiv, Substack, or ConvertKit. Ready to paste and publish.</div>
+      <div class="deliverable-detail">// Full issues, not bullet points</div>
+    </div>
+    <div class="deliverable reveal">
+      <div class="deliverable-icon">📱</div>
+      <div class="deliverable-title">WhatsApp Delivery</div>
+      <div class="deliverable-body">Every Monday your draft lands in your WhatsApp. Review on your phone, approve or request edits in plain language. No dashboards, no apps.</div>
+      <div class="deliverable-detail">// Where you already live</div>
+    </div>
+    <div class="deliverable reveal">
+      <div class="deliverable-icon">📚</div>
+      <div class="deliverable-title">Idea Bank & Archive</div>
+      <div class="deliverable-body">Every idea the agent finds gets stored and rated. You always have 30+ pending angles queued up. Writer's block becomes a foreign concept.</div>
+      <div class="deliverable-detail">// Never blank-page again</div>
+    </div>
+    <div class="deliverable reveal">
+      <div class="deliverable-icon">📖</div>
+      <div class="deliverable-title">Setup Guide + Community</div>
+      <div class="deliverable-body">Step-by-step video walkthrough, written docs, and access to a private community of other newsletter writers using the same system.</div>
+      <div class="deliverable-detail">// Never stuck alone</div>
+    </div>
+  </div>
+</section>
+
+<!-- MORNING MOCKUP -->
+<section class="morning">
+  <div class="reveal">
+    <div class="section-label">// Monday, 7:14 AM</div>
+    <h2 class="morning-headline">Wake up to a<br><em>full draft</em><br>waiting.</h2>
+    <p class="morning-body">
+      While you slept, your agent scanned 47 sources, identified the three most relevant stories in your niche, and drafted a full newsletter issue in your voice. It's waiting in WhatsApp. The whole thing took zero minutes of your time.
+    </p>
+  </div>
+  <div class="phone-wrap reveal">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <div class="phone-avatar">🤖</div>
+          <div>
+            <div class="phone-name">Content Machine</div>
+            <div class="phone-status">online</div>
+          </div>
+        </div>
+        <div class="phone-body">
+          <div class="msg msg-in">
+            <div>Good morning ☀️ Your weekly draft is ready.</div>
+            <div style="margin-top:8px"><strong>Issue #47 — "The 3 Metrics Most SaaS Founders Are Ignoring in 2026"</strong></div>
+            <div style="margin-top:8px;color:#8696a0;font-size:11px">Sources: 12 · Words: 820 · Read time: 4 min</div>
+            <div class="msg-time">07:14</div>
+          </div>
+          <div class="msg msg-in">
+            <div>Hook is trending angle from r/SaaS (2.3k upvotes yesterday). Body pulls from 3 founder threads on X. CTA links to your lead magnet.</div>
+            <div style="margin-top:8px;color:#8696a0;font-size:11px">Confidence score: 91%</div>
+            <div class="msg-time">07:14</div>
+          </div>
+          <div class="msg msg-out">
+            <div>Looks good. Change the CTA to push my new course instead.</div>
+            <div class="msg-time">07:31</div>
+          </div>
+          <div class="msg msg-in">
+            <div>Done. CTA updated. Revised draft ready — want me to push it to Beehiiv as a draft?</div>
+            <div class="msg-time">07:31</div>
+          </div>
+          <div class="msg msg-out">
+            <div>Yes, do it.</div>
+            <div class="msg-time">07:32</div>
+          </div>
+          <div class="msg msg-in">
+            <div>✓ Published to Beehiiv as draft. Scheduled for Tuesday 9am. Have a great week.</div>
+            <div class="msg-time">07:32</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing">
+  <div class="pricing-label reveal">// Simple Pricing</div>
+  <h2 class="pricing-headline reveal">One price.<br>Yours forever.</h2>
+  <p class="pricing-sub reveal">No subscriptions. No per-issue fees. No surprises.</p>
+
+  <div class="price-card reveal">
+    <div class="price-badge">⚡ FOUNDING MEMBER PRICE — 40% OFF</div>
+    <div class="price-original">$247</div>
+    <div class="price-amount">$147</div>
+    <div class="price-type">// ONE-TIME PAYMENT · LIFETIME ACCESS</div>
+    <div class="price-includes">
+      <div class="price-item"><span class="price-check">✓</span><span>Pre-configured OpenClaw package for newsletter writers</span></div>
+      <div class="price-item"><span class="price-check">✓</span><span>Niche intelligence scanner (monitors 20+ sources/week)</span></div>
+      <div class="price-item"><span class="price-check">✓</span><span>Voice profile system + setup walkthrough</span></div>
+      <div class="price-item"><span class="price-check">✓</span><span>WhatsApp delivery integration</span></div>
+      <div class="price-item"><span class="price-check">✓</span><span>Beehiiv / Substack / ConvertKit export</span></div>
+      <div class="price-item"><span class="price-check">✓</span><span>Step-by-step video setup guide (under 60 min)</span></div>
+      <div class="price-item"><span class="price-check">✓</span><span>Private community access</span></div>
+      <div class="price-item"><span class="price-check">✓</span><span>All future updates included</span></div>
+    </div>
+    <button class="price-cta" onclick="document.querySelector('.waitlist-card').scrollIntoView({behavior:'smooth'})">JOIN THE WAITLIST →</button>
+    <div class="price-guarantee">// 30-day money-back guarantee if it doesn't run as described</div>
+  </div>
+</section>
+
+<!-- SOCIAL POSTS -->
+<section class="social-section">
+  <div class="social-label">// Week 1 Launch Posts</div>
+  <h2 class="social-headline reveal">Post these on X this week.</h2>
+  <div class="tweets">
+
+    <div class="tweet reveal">
+      <div class="tweet-header">
+        <div class="tweet-avatar">Y</div>
+        <div>
+          <div class="tweet-name">You</div>
+          <div class="tweet-handle">@yourhandle</div>
+        </div>
+      </div>
+      <div class="tweet-body">
+        I've been spending 10 hours a week writing my newsletter.<br><br>
+        I'm building something that gets it down to 20 minutes.<br><br>
+        An AI agent that monitors your niche 24/7 and drafts full issues in your voice — delivered to your WhatsApp Monday morning.<br><br>
+        Waitlist opens today. First 50 get 40% off.<br><br>
+        <span class="tweet-tag">↓ Link in replies</span>
+      </div>
+      <div class="tweet-footer">
+        <span>LAUNCH POST · HOOK</span>
+        <button class="copy-btn" onclick="copyTweet(this, 0)">COPY</button>
+      </div>
+    </div>
+
+    <div class="tweet reveal">
+      <div class="tweet-header">
+        <div class="tweet-avatar">Y</div>
+        <div>
+          <div class="tweet-name">You</div>
+          <div class="tweet-handle">@yourhandle</div>
+        </div>
+      </div>
+      <div class="tweet-body">
+        Hot take: most newsletter writers aren't writers.<br><br>
+        They're researchers, editors, formatters, schedulers — who occasionally get to write.<br><br>
+        The actual writing is maybe 15% of the job.<br><br>
+        I'm building a tool that handles the other 85% so you can be a writer again.<br><br>
+        Join the waitlist (link in bio) — 23 spots left at founding price.
+      </div>
+      <div class="tweet-footer">
+        <span>PAIN POINT · ENGAGEMENT</span>
+        <button class="copy-btn" onclick="copyTweet(this, 1)">COPY</button>
+      </div>
+    </div>
+
+    <div class="tweet reveal">
+      <div class="tweet-header">
+        <div class="tweet-avatar">Y</div>
+        <div>
+          <div class="tweet-name">You</div>
+          <div class="tweet-handle">@yourhandle</div>
+        </div>
+      </div>
+      <div class="tweet-body">
+        This Monday I woke up and my newsletter was already written.<br><br>
+        Full draft. My voice. Right angle. Sources cited.<br><br>
+        All I did was edit for 18 minutes and hit publish.<br><br>
+        An AI agent ran overnight and did everything else.<br><br>
+        I'm packaging this exact setup and selling it. DM me "MACHINE" if you want early access.
+      </div>
+      <div class="tweet-footer">
+        <span>SOCIAL PROOF · DEMO</span>
+        <button class="copy-btn" onclick="copyTweet(this, 2)">COPY</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">The Content Machine</div>
+  <div class="footer-mono">// Built with OpenClaw · For newsletter writers who'd rather write</div>
+  <div class="footer-mono">© 2026</div>
+</footer>
+
+<script>
+  // Animate bars on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+        if (el.target.classList.contains('time-breakdown')) {
+          el.target.querySelectorAll('.time-bar').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+          });
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  // Init bars at 0
+  document.querySelectorAll('.time-bar').forEach(bar => bar.style.width = '0');
+
+  document.querySelectorAll('.reveal, .time-breakdown').forEach(el => observer.observe(el));
+
+  // Form
+  function handleSubmit() {
+    const name = document.getElementById('name-input').value.trim();
+    const email = document.getElementById('email-input').value.trim();
+    if (!name || !email) { alert('Please enter your name and email.'); return; }
+    document.getElementById('form-wrap').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
+    document.getElementById('spot-num').textContent = Math.floor(Math.random() * 5) + 24;
+    // In production: send to your email service here
+  }
+
+  // Copy tweets
+  const tweetTexts = [
+    `I've been spending 10 hours a week writing my newsletter.\n\nI'm building something that gets it down to 20 minutes.\n\nAn AI agent that monitors your niche 24/7 and drafts full issues in your voice — delivered to your WhatsApp Monday morning.\n\nWaitlist opens today. First 50 get 40% off.\n\n↓ Link in replies`,
+    `Hot take: most newsletter writers aren't writers.\n\nThey're researchers, editors, formatters, schedulers — who occasionally get to write.\n\nThe actual writing is maybe 15% of the job.\n\nI'm building a tool that handles the other 85% so you can be a writer again.\n\nJoin the waitlist (link in bio) — 23 spots left at founding price.`,
+    `This Monday I woke up and my newsletter was already written.\n\nFull draft. My voice. Right angle. Sources cited.\n\nAll I did was edit for 18 minutes and hit publish.\n\nAn AI agent ran overnight and did everything else.\n\nI'm packaging this exact setup and selling it. DM me "MACHINE" if you want early access.`
+  ];
+
+  function copyTweet(btn, idx) {
+    navigator.clipboard.writeText(tweetTexts[idx]).then(() => {
+      btn.textContent = 'COPIED ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // Set today's date
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+</script>
+</body>
+</html>
