@@ -998,13 +998,20 @@
   document.querySelectorAll('.reveal, .time-breakdown').forEach(el => observer.observe(el));
 
   function handleSubmit() {
-    const name = document.getElementById('name-input').value.trim();
-    const email = document.getElementById('email-input').value.trim();
-    if (!name || !email) { alert('Please enter your name and email.'); return; }
+  const name = document.getElementById('name-input').value.trim();
+  const email = document.getElementById('email-input').value.trim();
+  const niche = document.getElementById('niche-input').value.trim();
+  if (!name || !email) { alert('Please enter your name and email.'); return; }
+  fetch('https://formspree.io/f/meelrdpw', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, niche })
+  }).then(() => {
     document.getElementById('form-wrap').style.display = 'none';
     document.getElementById('success-msg').style.display = 'block';
     document.getElementById('spot-num').textContent = Math.floor(Math.random() * 5) + 24;
-  }
+  });
+}
 
   document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
