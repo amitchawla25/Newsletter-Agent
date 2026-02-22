@@ -229,31 +229,13 @@
     font-size: 18px;
     font-style: italic;
   }
- .success-msg small {
+
+  .success-msg small {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
     color: #9a9080;
     display: block;
     margin-top: 6px;
-  }
-
-  /* DIVIDER */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 0 48px;
-    margin: 0;
-  }
-
-  .divider-line { flex: 1; height: 1px; background: var(--border); }
-
-  .divider-text {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
   }
 
   /* PAIN SECTION */
@@ -265,8 +247,6 @@
     gap: 80px;
     align-items: start;
   }
-
-  .pain-left {}
 
   .section-label {
     font-family: 'DM Mono', monospace;
@@ -409,7 +389,8 @@
     line-height: 1.7;
     color: var(--muted);
   }
- .step-time {
+
+  .step-time {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     color: var(--accent);
@@ -426,9 +407,7 @@
     color: var(--paper);
   }
 
-  .output-header {
-    margin-bottom: 56px;
-  }
+  .output-header { margin-bottom: 56px; }
 
   .output-label {
     font-family: 'DM Mono', monospace;
@@ -464,10 +443,7 @@
 
   .deliverable:hover { border-top-color: var(--accent); }
 
-  .deliverable-icon {
-    font-size: 28px;
-    margin-bottom: 16px;
-  }
+  .deliverable-icon { font-size: 28px; margin-bottom: 16px; }
 
   .deliverable-title {
     font-family: 'Playfair Display', serif;
@@ -475,6 +451,7 @@
     font-weight: 700;
     margin-bottom: 10px;
   }
+
   .deliverable-body {
     font-size: 14px;
     line-height: 1.7;
@@ -517,10 +494,7 @@
   }
 
   /* WHATSAPP MOCKUP */
-  .phone-wrap {
-    display: flex;
-    justify-content: center;
-  }
+  .phone-wrap { display: flex; justify-content: center; }
 
   .phone {
     width: 300px;
@@ -528,7 +502,6 @@
     border-radius: 36px;
     padding: 16px;
     box-shadow: 0 32px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
-    position: relative;
   }
 
   .phone-screen {
@@ -545,6 +518,7 @@
     align-items: center;
     gap: 10px;
   }
+
   .phone-avatar {
     width: 36px;
     height: 36px;
@@ -556,16 +530,8 @@
     font-size: 16px;
   }
 
-  .phone-name {
-    color: #e9edef;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .phone-status {
-    color: #8696a0;
-    font-size: 11px;
-  }
+  .phone-name { color: #e9edef; font-size: 14px; font-weight: 500; }
+  .phone-status { color: #8696a0; font-size: 11px; }
 
   .phone-body {
     padding: 16px 12px;
@@ -580,7 +546,6 @@
     border-radius: 8px;
     font-size: 12px;
     line-height: 1.5;
-    position: relative;
   }
 
   .msg-in {
@@ -597,14 +562,8 @@
     border-bottom-right-radius: 2px;
   }
 
-  .msg-time {
-    font-size: 9px;
-    color: #8696a0;
-    text-align: right;
-    margin-top: 3px;
-  }
- .msg-in .msg-time { text-align: left; }
-
+  .msg-time { font-size: 9px; color: #8696a0; text-align: right; margin-top: 3px; }
+  .msg-in .msg-time { text-align: left; }
   .msg strong { color: #25d366; }
 
   /* PRICING */
@@ -684,10 +643,7 @@
     margin-bottom: 36px;
   }
 
-  .price-includes {
-    text-align: left;
-    margin-bottom: 36px;
-  }
+  .price-includes { text-align: left; margin-bottom: 36px; }
 
   .price-item {
     display: flex;
@@ -700,12 +656,7 @@
 
   .price-item:last-child { border-bottom: none; }
 
-  .price-check {
-    color: var(--accent);
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
+  .price-check { color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
 
   .price-cta {
     width: 100%;
@@ -730,21 +681,6 @@
     margin-top: 20px;
     letter-spacing: 0.05em;
   }
-
-  .copy-btn {
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    padding: 6px 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .copy-btn:hover { background: var(--accent); }
-  .copy-btn.copied { background: var(--gold); }
 
   /* FOOTER */
   footer {
@@ -781,18 +717,14 @@
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-  }
+  .reveal.visible { opacity: 1; transform: none; }
 
   /* RESPONSIVE */
   @media (max-width: 900px) {
-    .masthead, .hero, .pain, .how, .output, .morning, .pricing, .social-section, footer {
+    .masthead, .hero, .pain, .how, .output, .morning, .pricing, footer {
       padding-left: 24px;
       padding-right: 24px;
     }
-
     .hero-layout, .pain, .morning { grid-template-columns: 1fr; gap: 40px; }
     .steps, .deliverables { grid-template-columns: 1fr; }
     .how-header { flex-direction: column; gap: 16px; }
@@ -1021,7 +953,6 @@
   <div class="pricing-label reveal">// Simple Pricing</div>
   <h2 class="pricing-headline reveal">One price.<br>Yours forever.</h2>
   <p class="pricing-sub reveal">No subscriptions. No per-issue fees. No surprises.</p>
-
   <div class="price-card reveal">
     <div class="price-badge">⚡ FOUNDING MEMBER PRICE — 40% OFF</div>
     <div class="price-original">$247</div>
@@ -1042,78 +973,6 @@
   </div>
 </section>
 
-<!-- SOCIAL POSTS -->
-<section class="social-section">
-  <div class="social-label">// Week 1 Launch Posts</div>
-  <h2 class="social-headline reveal">Post these on X this week.</h2>
-  <div class="tweets">
-
-    <div class="tweet reveal">
-      <div class="tweet-header">
-        <div class="tweet-avatar">Y</div>
-        <div>
-          <div class="tweet-name">You</div>
-          <div class="tweet-handle">@yourhandle</div>
-        </div>
-      </div>
-      <div class="tweet-body">
-        I've been spending 10 hours a week writing my newsletter.<br><br>
-        I'm building something that gets it down to 20 minutes.<br><br>
-        An AI agent that monitors your niche 24/7 and drafts full issues in your voice — delivered to your WhatsApp Monday morning.<br><br>
-        Waitlist opens today. First 50 get 40% off.<br><br>
-        <span class="tweet-tag">↓ Link in replies</span>
-      </div>
-      <div class="tweet-footer">
-        <span>LAUNCH POST · HOOK</span>
-        <button class="copy-btn" onclick="copyTweet(this, 0)">COPY</button>
-      </div>
-    </div>
-
-    <div class="tweet reveal">
-      <div class="tweet-header">
-        <div class="tweet-avatar">Y</div>
-        <div>
-          <div class="tweet-name">You</div>
-          <div class="tweet-handle">@yourhandle</div>
-        </div>
-      </div>
-      <div class="tweet-body">
-        Hot take: most newsletter writers aren't writers.<br><br>
-        They're researchers, editors, formatters, schedulers — who occasionally get to write.<br><br>
-        The actual writing is maybe 15% of the job.<br><br>
-        I'm building a tool that handles the other 85% so you can be a writer again.<br><br>
-        Join the waitlist (link in bio) — 23 spots left at founding price.
-      </div>
-      <div class="tweet-footer">
-        <span>PAIN POINT · ENGAGEMENT</span>
-        <button class="copy-btn" onclick="copyTweet(this, 1)">COPY</button>
-      </div>
-    </div>
-
-    <div class="tweet reveal">
-      <div class="tweet-header">
-        <div class="tweet-avatar">Y</div>
-        <div>
-          <div class="tweet-name">You</div>
-          <div class="tweet-handle">@yourhandle</div>
-        </div>
-      </div>
-      <div class="tweet-body">
-        This Monday I woke up and my newsletter was already written.<br><br>
-        Full draft. My voice. Right angle. Sources cited.<br><br>
-        All I did was edit for 18 minutes and hit publish.<br><br>
-        An AI agent ran overnight and did everything else.<br><br>
-        I'm packaging this exact setup and selling it. DM me "MACHINE" if you want early access.
-      </div>
-      <div class="tweet-footer">
-        <span>SOCIAL PROOF · DEMO</span>
-        <button class="copy-btn" onclick="copyTweet(this, 2)">COPY</button>
-      </div>
-    </div>
-
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer>
   <div class="footer-brand">The Content Machine</div>
@@ -1122,7 +981,6 @@
 </footer>
 
 <script>
-  // Animate bars on scroll
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(el => {
       if (el.isIntersecting) {
@@ -1136,12 +994,9 @@
     });
   }, { threshold: 0.15 });
 
-  // Init bars at 0
   document.querySelectorAll('.time-bar').forEach(bar => bar.style.width = '0');
-
   document.querySelectorAll('.reveal, .time-breakdown').forEach(el => observer.observe(el));
 
-  // Form
   function handleSubmit() {
     const name = document.getElementById('name-input').value.trim();
     const email = document.getElementById('email-input').value.trim();
@@ -1149,10 +1004,8 @@
     document.getElementById('form-wrap').style.display = 'none';
     document.getElementById('success-msg').style.display = 'block';
     document.getElementById('spot-num').textContent = Math.floor(Math.random() * 5) + 24;
-    // In production: send to your email service here
   }
 
-  // Set today's date
   document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
